@@ -1,5 +1,7 @@
+import { StLayerElementBoxDiv } from '../../styles';
+
 const LayerElementBox = () => {
-  return <div>LayerElementBox</div>;
+  return <StLayerElementBoxDiv>LayerElementBox</StLayerElementBoxDiv>;
 };
 
 export default LayerElementBox;

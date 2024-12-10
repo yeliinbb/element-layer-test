@@ -1,5 +1,23 @@
+import { LayerElementBox } from '..';
+import { StLayoutPanel } from '../../styles';
+
 const DrawPanel = () => {
-  return <div>DrawPanel</div>;
+  return (
+    <StLayoutPanel>
+      <div>
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+        <LayerElementBox />
+      </div>
+    </StLayoutPanel>
+  );
 };
 
 export default DrawPanel;
