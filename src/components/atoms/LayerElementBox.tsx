@@ -1,7 +1,18 @@
-import { StLayerElementBoxDiv } from '../../styles';
+import { StLayerElementBox } from '../../styles';
 
-const LayerElementBox = () => {
-  return <StLayerElementBoxDiv>LayerElementBox</StLayerElementBoxDiv>;
+interface LayerElementBoxProps {
+  children: string;
+  isSelected: boolean;
+  onClick: () => void;
+  color: string;
+}
+
+const LayerElementBox = ({ children, isSelected, onClick, color }: LayerElementBoxProps) => {
+  return (
+    <StLayerElementBox onClick={onClick} $isSelected={isSelected} $color={color}>
+      {children}
+    </StLayerElementBox>
+  );
 };
 
 export default LayerElementBox;

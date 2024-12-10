@@ -1,16 +1,16 @@
-import { DownloadButton, DrawPanel } from '..';
+import { DownloadButton, CanvasPanel } from '..';
 import { buttonLabels } from '../../constants';
 import { StSection } from '../../styles';
 
-const DrawSection = () => {
+const Canvas = () => {
   const handleDownloadScreenshot = () => {};
 
   return (
     <StSection>
       <DownloadButton children={buttonLabels.download} onClick={handleDownloadScreenshot} />
-      <DrawPanel />
+      <CanvasPanel />
     </StSection>
   );
 };
 
-export default DrawSection;
+export default Canvas;
