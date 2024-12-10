@@ -3,9 +3,11 @@ import { buttonLabels } from '../../constants';
 import { StSection } from '../../styles';
 
 const DrawSection = () => {
+  const handleDownloadScreenshot = () => {};
+
   return (
     <StSection>
-      <DownloadButton children={buttonLabels.download} />
+      <DownloadButton children={buttonLabels.download} onClick={handleDownloadScreenshot} />
       <DrawPanel />
     </StSection>
   );

@@ -9,6 +9,7 @@ type ButtonPanelType = keyof typeof ButtonPanelTypes;
 
 export interface ButtonPanelProps {
   type: ButtonPanelType;
+  onClick: () => void;
 }
 
 export const buttonPanelData = {

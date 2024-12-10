@@ -1,21 +1,17 @@
+import { useMemo } from 'react';
 import { LayerElementBox } from '..';
 import { StLayoutPanel } from '../../styles';
 
 const DrawPanel = () => {
+  const elementBoxes = useMemo<React.ReactNode[]>(
+    () =>
+      Array.from({ length: 21 }, (_, index) => <LayerElementBox key={crypto.randomUUID()} data-layer-index={index} />),
+    [],
+  );
+
   return (
     <StLayoutPanel>
-      <div>
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-        <LayerElementBox />
-      </div>
+      <div>{elementBoxes}</div>
     </StLayoutPanel>
   );
 };
