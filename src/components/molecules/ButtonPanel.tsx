@@ -4,7 +4,12 @@ import { useAddElement } from '../../hooks';
 import { StButtonPanel } from '../../styles';
 import { ButtonPanelProps, ElementType } from '../../types';
 
-export const buttonPanelData = {
+interface ButtonData {
+  Align: { label: string; key: string }[];
+  Add: { label: string; key: ElementType }[];
+}
+
+export const buttonPanelData: ButtonData = {
   Align: [
     { label: buttonLabels.align.allVertical, key: 'allVertical' },
     { label: buttonLabels.align.allHorizontal, key: 'allHorizontal' },

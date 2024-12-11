@@ -1,4 +1,4 @@
-const ButtonPanelTypes = {
+export const ButtonPanelTypes = {
   Align: 'Align',
   Add: 'Add',
 } as const;
