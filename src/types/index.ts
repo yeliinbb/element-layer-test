@@ -1,2 +1,2 @@
-export * from './buttonPanel.types';
+export * from './button-panel.types';
 export * from './element.types';
