@@ -5,7 +5,7 @@ export const selectedElementState = selector({
   key: 'selectedElementState',
   get: ({ get }) => {
     const elements = get(elementsState);
-    const selectedId = get(selectedElementIdState);
-    return elements.filter((element) => element.id === selectedId);
+    const selectedIds = get(selectedElementIdState);
+    return elements.filter((element) => selectedIds.includes(element.id));
   },
 });
