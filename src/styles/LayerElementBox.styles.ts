@@ -10,4 +10,6 @@ export const StLayerElementBox = styled.li<StLayerElementBoxProps>`
   height: 150px;
   background-color: ${(props) => props.$color};
   border: 2px solid ${(props) => (props.$isSelected ? '#ff0000' : 'transparent')};
+  position: relative;
+  z-index: 1;
 `;
