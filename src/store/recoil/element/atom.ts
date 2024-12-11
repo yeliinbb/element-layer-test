@@ -6,7 +6,7 @@ export const elementsState = atom<ElementNode[]>({
   default: [],
 });
 
-export const selectedElementIdState = atom<string | null>({
+export const selectedElementIdState = atom<string[]>({
   key: 'selectedElementIdState',
-  default: null,
+  default: [],
 });

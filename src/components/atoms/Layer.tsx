@@ -3,7 +3,7 @@ import { StLayerList } from '../../styles';
 interface LayerProps {
   children: string;
   isSelected: boolean;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }
 
 const Layer = ({ children, onClick, isSelected }: LayerProps) => {

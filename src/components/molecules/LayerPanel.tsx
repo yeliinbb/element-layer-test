@@ -1,11 +1,9 @@
 import { Layer } from '..';
 import { StLayerPanel } from '../../styles';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { elementsState, selectedElementIdState } from '../../store/recoil/element/atom';
+import { useSelectElement } from '../../hooks';
 
 const LayerPanel = () => {
-  const elements = useRecoilValue(elementsState);
-  const [selectedId, setSelectedId] = useRecoilState(selectedElementIdState);
+  const { elements, selectedIds, handleElementClick } = useSelectElement();
 
   return (
     <StLayerPanel>
@@ -14,8 +12,8 @@ const LayerPanel = () => {
           <Layer
             key={element.id}
             children={element.type}
-            isSelected={selectedId === element.id}
-            onClick={() => setSelectedId(element.id)}
+            isSelected={selectedIds.includes(element.id)}
+            onClick={(e) => handleElementClick(element.id, e)}
           />
         ))}
       </ul>
