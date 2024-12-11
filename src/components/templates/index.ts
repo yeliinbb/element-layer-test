@@ -1,1 +1,1 @@
-export { default as DrawAlignView } from './DrawAlignView';
+export { default as CanvasEditorLayout } from './CanvasEditorLayout';

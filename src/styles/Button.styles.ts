@@ -4,9 +4,7 @@ export const StDownloadButton = styled.button`
   background-color: orangered;
   padding: 8px;
   width: 100%;
-  border-color: black;
-  border-width: 1px;
-  border-style: solid;
+  border: 1px solid black;
   max-width: max-content;
 `;
 

@@ -1,11 +1,17 @@
-import { StLayerDiv } from '../../styles';
+import { StLayerList } from '../../styles';
 
 interface LayerProps {
   children: string;
+  isSelected: boolean;
+  onClick: (e: React.MouseEvent) => void;
 }
 
-const Layer = ({ children }: LayerProps) => {
-  return <StLayerDiv>{children}</StLayerDiv>;
+const Layer = ({ children, onClick, isSelected }: LayerProps) => {
+  return (
+    <StLayerList onClick={onClick} $isSelected={isSelected}>
+      {children}
+    </StLayerList>
+  );
 };
 
 export default Layer;

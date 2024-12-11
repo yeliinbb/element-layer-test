@@ -5,7 +5,7 @@ export const StLayerPanel = styled.div`
   height: 80vh;
   overflow: hidden;
 
-  & > div {
+  & > ul {
     height: 100%;
     display: flex;
     flex-direction: column;

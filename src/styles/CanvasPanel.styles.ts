@@ -5,13 +5,13 @@ export const StLayoutPanel = styled.div`
   margin: 16px;
   height: fit-content;
 
-  div {
+  ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
 
-    & > div {
+    & > li {
       flex: 0 0 130px;
       height: 150px;
     }

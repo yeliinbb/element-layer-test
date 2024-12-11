@@ -1,12 +1,13 @@
-import { DrawAlignView } from './components';
+import { RecoilRoot } from 'recoil';
+import { CanvasEditorLayout } from './components';
 import GlobalStyle from './styles/GlobalStyle';
 
 function App() {
   return (
-    <>
+    <RecoilRoot>
       <GlobalStyle />
-      <DrawAlignView />
-    </>
+      <CanvasEditorLayout />
+    </RecoilRoot>
   );
 }
 
