@@ -6,9 +6,8 @@ interface StGroupContainerProps {
 
 export const StGroupContainer = styled.div<StGroupContainerProps>`
   position: relative;
-  display: inline-flex;
-  gap: 8px;
-  padding: 8px;
+  display: flex;
+  min-width: fit-content;
 
   &::before {
     content: '';
@@ -18,6 +17,7 @@ export const StGroupContainer = styled.div<StGroupContainerProps>`
     right: 0;
     bottom: 0;
     border: 2px solid ${(props) => (props.$isSelected ? '#ff0000' : 'transparent')};
+    z-index: 50;
     pointer-events: none; // 클릭 이벤트가 내부 요소들에 전달되도록
   }
 `;

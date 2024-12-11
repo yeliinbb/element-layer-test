@@ -1,11 +1,13 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { elementsState, selectedElementIdState } from '../store/recoil/element/atom';
+import { elementsState, selectedElementIdState } from '../store/recoil';
 
 const useSelectElement = () => {
   const elements = useRecoilValue(elementsState);
   const [selectedIds, setSelectedIds] = useRecoilState(selectedElementIdState);
 
   const handleElementClick = (elementID: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+
     if (event.shiftKey) {
       setSelectedIds((prev) => {
         if (prev.includes(elementID)) {

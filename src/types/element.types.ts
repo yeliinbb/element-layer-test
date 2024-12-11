@@ -5,4 +5,5 @@ export type ElementNode = {
   type: ElementType;
   color: string;
   groupId?: string;
+  order?: number;
 };

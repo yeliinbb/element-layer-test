@@ -1,6 +1,6 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { elementsState, selectedElementIdState } from '../store/recoil/element/atom';
 import { useEffect } from 'react';
+import { elementsState, selectedElementIdState } from '../store/recoil';
 
 const useGroupElement = () => {
   const [elements, setElements] = useRecoilState(elementsState);

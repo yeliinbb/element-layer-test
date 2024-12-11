@@ -1,6 +1,6 @@
 import { useSetRecoilState } from 'recoil';
-import { elementsState } from '../store/recoil/element/atom';
 import { ElementNode } from '../types';
+import { elementsState } from '../store/recoil';
 
 const useAddElement = () => {
   const setElements = useSetRecoilState(elementsState);
