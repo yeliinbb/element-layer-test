@@ -1,5 +1,14 @@
+import { LayerPanel, ButtonPanel } from '..';
+import { StNav } from '../../styles';
+
 const SideBar = () => {
-  return <div>SideBar</div>;
+  return (
+    <StNav>
+      <ButtonPanel type="Align" />
+      <ButtonPanel type="Add" />
+      <LayerPanel />
+    </StNav>
+  );
 };
 
 export default SideBar;

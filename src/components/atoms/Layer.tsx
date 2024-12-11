@@ -1,5 +1,17 @@
-const Layer = () => {
-  return <div>Layer</div>;
+import { StLayerList } from '../../styles';
+
+interface LayerProps {
+  children: string;
+  isSelected: boolean;
+  onClick: (e: React.MouseEvent) => void;
+}
+
+const Layer = ({ children, onClick, isSelected }: LayerProps) => {
+  return (
+    <StLayerList onClick={onClick} $isSelected={isSelected}>
+      {children}
+    </StLayerList>
+  );
 };
 
 export default Layer;
