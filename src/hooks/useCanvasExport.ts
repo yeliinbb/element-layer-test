@@ -11,7 +11,7 @@ const HTML2CANVAS_OPTIONS = {
   backgroundColor: null,
   logging: false, // 성능을 위해 로깅 비활성화
   useCORS: true, // 외부 이미지 리소스 처리를 위해 필요할 수 있음
-  allowTaint: false, // 보안을 위해 false로 유지
+  allowTaint: true, // 보안을 위해 false로 유지
 };
 
 const useCanvasExport = ({ canvasRef }: useCanvasExportProps) => {
@@ -38,36 +38,17 @@ const useCanvasExport = ({ canvasRef }: useCanvasExportProps) => {
     }
   }, []);
 
-  const downloadImage = async ({ dataUrl, fileName }: { dataUrl: string; fileName: string }) => {
-    try {
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
-      saveAs(blob, fileName);
-      return true;
-    } catch (error) {
-      console.error('Download failed:', error);
-      return false;
-    }
-  };
-
   const handleDownloadScreenshot = async () => {
     if (!canvasRef.current) {
       return;
     }
 
-    const blob = await generateImage(canvasRef.current);
-    const reader = new FileReader();
-
-    reader.onloadend = async () => {
-      if (typeof reader.result === 'string') {
-        await downloadImage({
-          dataUrl: reader.result,
-          fileName: 'canvas.png',
-        });
-      }
-    };
-
-    reader.readAsDataURL(blob);
+    try {
+      const blob = await generateImage(canvasRef.current);
+      saveAs(blob, 'canvas.png');
+    } catch (error) {
+      console.error('Screenshot download failed:', error);
+    }
   };
 
   return { handleDownloadScreenshot };
