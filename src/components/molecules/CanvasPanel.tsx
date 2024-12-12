@@ -13,11 +13,15 @@ import {
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { useSelectElement, useGroupElement, useDragDrop } from '../../hooks';
 import { SortableElementBox } from '../common';
-import { useCallback, useMemo } from 'react';
+import { RefObject, useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { alignState } from '../../store/recoil';
 
-const CanvasPanel = () => {
+interface CanvasPanelProps {
+  canvasRef: RefObject<HTMLDivElement>;
+}
+
+const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
   const { elements, selectedIds, handleElementClick } = useSelectElement();
   const { handleDragEnd: originalHandleDragEnd } = useDragDrop();
   const alignment = useRecoilValue(alignState);
@@ -100,7 +104,7 @@ const CanvasPanel = () => {
   }, [elements]);
 
   return (
-    <StCanvasPanel $alignDirection={alignment.global}>
+    <StCanvasPanel $alignDirection={alignment.global} ref={canvasRef}>
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
         <SortableContext items={sortedItems} strategy={rectSortingStrategy}>
           <ul>{renderElements()}</ul>

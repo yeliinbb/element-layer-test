@@ -6,6 +6,10 @@ export const StDownloadButton = styled.button`
   width: 100%;
   border: 1px solid black;
   max-width: max-content;
+
+  &:hover {
+    background-color: #f7892e;
+  }
 `;
 
 export const StPanelButton = styled.button`

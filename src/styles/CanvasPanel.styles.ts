@@ -6,11 +6,13 @@ interface StGroupContainerProps {
 }
 
 export const StCanvasPanel = styled.div<{ $alignDirection: 'vertical' | 'horizontal' }>`
-  background-color: antiquewhite;
+  /* background-color: antiquewhite; */
+  width: fit-content;
   margin: 16px;
   height: fit-content;
 
   ul {
+    background-color: antiquewhite;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: ${({ $alignDirection }) => ($alignDirection === 'vertical' ? 'column' : 'row')};
