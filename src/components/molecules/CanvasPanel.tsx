@@ -2,6 +2,7 @@ import { LayerElementBox } from '..';
 import { StGroupContainer, StCanvasPanel } from '../../styles';
 import {
   DndContext,
+  DragEndEvent,
   MouseSensor,
   TouchSensor,
   closestCenter,
@@ -9,14 +10,15 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { useSelectElement, useGroupElement, useDragDrop } from '../../hooks';
-import { ElementNode } from '../../types';
 import { SortableElementBox } from '../common';
+import { useCallback, useMemo } from 'react';
 
 const CanvasPanel = () => {
   const { elements, selectedIds, handleElementClick } = useSelectElement();
-  const { handleDragEnd } = useDragDrop();
+  console.log('elements', elements);
+  const { handleDragEnd: originalHandleDragEnd } = useDragDrop();
   useGroupElement();
 
   const { active } = useDndContext();
@@ -36,76 +38,74 @@ const CanvasPanel = () => {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      originalHandleDragEnd(event);
+    },
+    [originalHandleDragEnd],
+  );
+
   const renderElements = () => {
-    const sortedElements = [...elements].sort((a, b) => a.order! - b.order!);
+    const sortedElements = useMemo(() => {
+      return [...elements]
+        .filter((element) => !element.groupId || element.type === 'group')
+        .sort((a, b) => a.order - b.order);
+    }, [elements]);
 
-    const groupElements = new Map<string | undefined, ElementNode[]>();
+    const isGroupSelected = sortedElements.some((element) => selectedIds.includes(element.id));
 
-    sortedElements.forEach((element) => {
-      const key = element.groupId || 'ungrouped';
-      if (!groupElements.has(key)) {
-        groupElements.set(key, []);
-      }
-      groupElements.get(key)?.push(element);
-    });
+    return sortedElements.map((sortedElement) => {
+      if (sortedElement.type === 'group') {
+        const groupChildren = elements.filter((element) => element.groupId === sortedElement.id);
 
-    return Array.from(groupElements.entries()).map(([groupId, groupElements]) => {
-      if (groupId === 'ungrouped') {
-        return groupElements.map((element) => (
-          <SortableElementBox key={element.id} id={element.id}>
-            <LayerElementBox
-              isSelected={selectedIds.includes(element.id)}
-              onClick={(e) => handleElementClick(element.id, e)}
-              color={element.color}
-              isDragging={active?.id === element.id}
-            >
-              {element.type}
-            </LayerElementBox>
-          </SortableElementBox>
-        ));
-      }
-
-      const isGroupSelected = groupElements.some((el) => selectedIds.includes(el.id));
-
-      if (groupId && groupId !== 'ungrouped') {
         return (
-          <SortableElementBox key={groupId} id={groupId}>
+          <SortableElementBox key={`group-${sortedElement.id}`} id={sortedElement.id}>
             <StGroupContainer $isSelected={isGroupSelected}>
-              {groupElements.map((element) => (
+              {groupChildren.map((child) => (
                 <LayerElementBox
-                  key={element.id}
-                  children={element.type}
-                  isSelected={!isGroupSelected && selectedIds.includes(element.id)}
-                  onClick={(e) => handleElementClick(element.id, e)}
-                  color={element.color}
+                  key={`child-${child.id}`}
+                  children={`${child.type} (${child.order})`}
+                  color={child.color}
+                  isSelected={selectedIds.includes(child.id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // 그룹 클릭 우선 처리
+                    handleElementClick(sortedElement.id, e);
+                  }}
                 />
               ))}
             </StGroupContainer>
           </SortableElementBox>
         );
       }
+
+      return (
+        <SortableElementBox key={`element-${sortedElement.id}`} id={sortedElement.id}>
+          <LayerElementBox
+            children={`${sortedElement.type} (${sortedElement.order})`}
+            isSelected={selectedIds.includes(sortedElement.id)}
+            onClick={(e) => handleElementClick(sortedElement.id, e)}
+            color={sortedElement.color}
+            isDragging={active?.id === sortedElement.id}
+          />
+        </SortableElementBox>
+      );
     });
   };
 
+  const sortedItems = useMemo(() => {
+    const sortedElements = [...elements].sort((a, b) => a.order - b.order);
+
+    return sortedElements.map((element) => element.id);
+  }, [elements]);
+
   return (
-    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
-      <SortableContext
-        items={[
-          ...elements.filter((el) => !el.groupId).map((el) => el.id),
-          ...new Set(
-            elements
-              .filter((el) => el.groupId) // undefined가 아닌 것만 필터링
-              .map((el) => el.groupId)
-              .filter((groupId): groupId is string => groupId !== undefined),
-          ),
-        ]}
-        strategy={verticalListSortingStrategy}
-      >
-        <StCanvasPanel>
+    <StCanvasPanel>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
+        <SortableContext items={sortedItems} strategy={rectSortingStrategy}>
           <ul>{renderElements()}</ul>
-        </StCanvasPanel>
-      </SortableContext>
-    </DndContext>
+        </SortableContext>
+      </DndContext>
+    </StCanvasPanel>
   );
 };
 

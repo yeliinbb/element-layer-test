@@ -2,13 +2,15 @@ import { useSetRecoilState } from 'recoil';
 import { elementsState } from '../store/recoil';
 import { DragEndEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
-import { ElementNode } from '../types';
 
 const useDragDrop = () => {
   const setItems = useSetRecoilState(elementsState);
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+    const {
+      active, // 드래그되는 아이템,
+      over, // 드롭되는 위치의 아이템
+    } = event;
 
     if (!over || active.id === over.id) return;
 
@@ -16,35 +18,31 @@ const useDragDrop = () => {
       const oldIndex = items.findIndex((item) => item.id === active.id);
       const newIndex = items.findIndex((item) => item.id === over.id);
 
-      // 모든 아이템의 order 재계산
-      const updateOrder = (items: ElementNode[]) => {
-        return items.map((item, index) => ({
-          ...item,
-          order: index,
-        }));
-      };
+      // 이동할 요소들의 새 order 계산
+      const overOrder = items[newIndex].order || 0;
+      const prevOrder = newIndex > 0 ? items[newIndex - 1].order || 0 : 0;
+      const newOrder = (overOrder + prevOrder) / 2;
 
-      // 그룹 아이템들 함께 이동
-      if (items[oldIndex].type === 'group' || items[oldIndex].groupId) {
-        const groupId = items[oldIndex].type === 'group' ? items[oldIndex].id : items[oldIndex].groupId;
-
-        // 그룹 관련 아이템들
-        const groupItems = items.filter((item) => item.id === groupId || item.groupId === groupId);
-
-        // 나머지 아이템들
-        const otherItems = items.filter((item) => !groupItems.some((groupItem) => groupItem.id === item.id));
-
-        // 새로운 배열에 순서대로 삽입
-        let result = [...otherItems];
-        result.splice(newIndex, 0, ...groupItems);
-
-        // order 업데이트
-        return updateOrder(result);
+      // 그룹요소일 경우
+      if (items[oldIndex].groupId) {
+        const groupId = items[oldIndex].groupId;
+        return items.map((item) => {
+          if (item.id === groupId || item.groupId === groupId) {
+            return {
+              ...item,
+              order: newOrder,
+            };
+          }
+          return item;
+        });
       }
 
-      // 일반 아이템 이동
+      // 개별요소일 경우
       const reorderedItems = arrayMove(items, oldIndex, newIndex);
-      return updateOrder(reorderedItems);
+      return reorderedItems.map((item, index) => ({
+        ...item,
+        order: index,
+      }));
     });
   };
 

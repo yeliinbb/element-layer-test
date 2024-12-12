@@ -15,6 +15,7 @@ const useAddElement = () => {
       id: crypto.randomUUID(),
       type,
       color: getRandomColor(),
+      order: Date.now(),
     };
     setElements((prev) => [...prev, newElement]);
   };
