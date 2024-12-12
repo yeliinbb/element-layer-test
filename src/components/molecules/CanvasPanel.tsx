@@ -16,6 +16,7 @@ import { SortableElementBox } from '../common';
 import { RefObject, useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { alignState } from '../../store/recoil';
+import { ElementNodeChild } from '../../types';
 
 interface CanvasPanelProps {
   canvasRef: RefObject<HTMLDivElement>;
@@ -52,29 +53,24 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
   );
 
   const renderElements = () => {
-    const sortedElements = useMemo(() => {
-      return [...elements]
-        .filter((element) => !element.groupId || element.type === 'group')
-        .sort((a, b) => a.order - b.order);
-    }, [elements]);
+    return elements.map((element) => {
+      if (element.type === 'group') {
+        const groupChildren = element.children as ElementNodeChild[];
 
-    return sortedElements.map((sortedElement) => {
-      if (sortedElement.type === 'group') {
-        const groupChildren = elements.filter((element) => element.groupId === sortedElement.id);
-        const groupAlignment = alignment.groups[sortedElement.id] || 'horizontal';
-        const isGroupSelected = selectedIds.groups.includes(sortedElement.id);
+        const groupAlignment = alignment.groups[element.id] || 'horizontal';
+        const isGroupSelected = selectedIds.groups.includes(element.id);
 
         return (
-          <SortableElementBox key={`group-${sortedElement.id}`} id={sortedElement.id}>
-            <StGroupContainer key={sortedElement.id} $isSelected={isGroupSelected} $alignDirection={groupAlignment}>
-              {groupChildren.map((child) => (
+          <SortableElementBox key={`group-${element.id}`} id={element.id}>
+            <StGroupContainer key={element.id} $isSelected={isGroupSelected} $alignDirection={groupAlignment}>
+              {groupChildren?.map((child) => (
                 <LayerElementBox
                   key={`child-${child.id}`}
                   children={child.type}
                   color={child.color}
                   onClick={(e) => {
                     e.stopPropagation(); // 그룹 클릭 우선 처리
-                    handleElementClick(sortedElement.id, true, e);
+                    handleElementClick(element.id, true, e);
                   }}
                 />
               ))}
@@ -84,13 +80,13 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
       }
 
       return (
-        <SortableElementBox key={`element-${sortedElement.id}`} id={sortedElement.id}>
+        <SortableElementBox key={`element-${element.id}`} id={element.id}>
           <LayerElementBox
-            children={sortedElement.type}
-            isSelected={selectedIds.elements.includes(sortedElement.id)}
-            onClick={(e) => handleElementClick(sortedElement.id, false, e)}
-            color={sortedElement.color}
-            isDragging={active?.id === sortedElement.id}
+            children={element.type}
+            isSelected={selectedIds.elements.includes(element.id)}
+            onClick={(e) => handleElementClick(element.id, false, e)}
+            color={element.color}
+            isDragging={active?.id === element.id}
           />
         </SortableElementBox>
       );
