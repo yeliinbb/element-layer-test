@@ -64,7 +64,7 @@ const CanvasPanel = () => {
               {groupChildren.map((child) => (
                 <LayerElementBox
                   key={`child-${child.id}`}
-                  children={`${child.type} (${child.order})`}
+                  children={child.type}
                   color={child.color}
                   isSelected={selectedIds.includes(child.id)}
                   onClick={(e) => {
@@ -81,7 +81,7 @@ const CanvasPanel = () => {
       return (
         <SortableElementBox key={`element-${sortedElement.id}`} id={sortedElement.id}>
           <LayerElementBox
-            children={`${sortedElement.type} (${sortedElement.order})`}
+            children={sortedElement.type}
             isSelected={selectedIds.includes(sortedElement.id)}
             onClick={(e) => handleElementClick(sortedElement.id, e)}
             color={sortedElement.color}
