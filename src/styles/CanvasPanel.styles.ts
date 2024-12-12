@@ -2,16 +2,18 @@ import styled from 'styled-components';
 
 interface StGroupContainerProps {
   $isSelected: boolean;
+  $alignDirection: 'vertical' | 'horizontal';
 }
 
-export const StCanvasPanel = styled.div`
+export const StCanvasPanel = styled.div<{ $alignDirection: 'vertical' | 'horizontal' }>`
   background-color: antiquewhite;
   margin: 16px;
   height: fit-content;
 
   ul {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    flex-direction: ${({ $alignDirection }) => ($alignDirection === 'vertical' ? 'column' : 'row')};
     justify-content: flex-start;
     align-items: flex-start;
   }
@@ -25,12 +27,13 @@ export const StCanvasPanel = styled.div`
 export const StGroupContainer = styled.div<StGroupContainerProps>`
   position: relative;
   display: flex;
+  flex-wrap: nowrap;
+  flex-direction: ${({ $alignDirection }) => ($alignDirection === 'vertical' ? 'column' : 'row')};
   width: auto; // 자식 요소들의 너비에 맞춤
   min-width: fit-content;
   padding: 4px;
-  flex-wrap: nowrap; // 그룹 내 요소들이 줄바꿈되지 않도록
   cursor: pointer;
-  border: 2px solid ${(props) => (props.$isSelected ? '#ff0000' : '#4c3587')};
+  border: 2px solid ${(props) => (props.$isSelected ? '#4c3587' : 'none')};
 
   &::before {
     content: '';

@@ -3,7 +3,7 @@ import { StLayerElementBox } from '../../styles';
 
 export interface LayerElementBoxProps {
   children: React.ReactNode;
-  isSelected: boolean;
+  isSelected?: boolean;
   isDragging?: boolean;
   onClick: (e: React.MouseEvent) => void;
   color: string;
