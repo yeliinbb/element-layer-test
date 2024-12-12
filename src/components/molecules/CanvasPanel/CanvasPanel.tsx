@@ -1,5 +1,4 @@
-import { LayerElementBox } from '..';
-import { StGroupContainer, StCanvasPanel } from '../../styles';
+import { StCanvasPanel } from '../../../styles';
 import {
   DndContext,
   DragEndEvent,
@@ -11,12 +10,12 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
-import { useSelectElement, useGroupElement, useDragDrop } from '../../hooks';
-import { SortableElementBox } from '../common';
+import { useSelectElement, useGroupElement, useDragDrop } from '../../../hooks';
 import { RefObject, useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { alignState } from '../../store/recoil';
-import { ElementNodeChild } from '../../types';
+import { alignState } from '../../../store/recoil';
+import { ElementNodeChild } from '../../../types';
+import { CanvasGroupElement, CanvasSingleElement } from '..';
 
 interface CanvasPanelProps {
   canvasRef: RefObject<HTMLDivElement>;
@@ -25,8 +24,9 @@ interface CanvasPanelProps {
 const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
   const { elements, selectedIds, handleElementClick } = useSelectElement();
   const { handleDragEnd: originalHandleDragEnd } = useDragDrop();
-  const alignment = useRecoilValue(alignState);
   useGroupElement();
+
+  const alignment = useRecoilValue(alignState);
 
   const { active } = useDndContext();
 
@@ -56,39 +56,29 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
     return elements.map((element) => {
       if (element.type === 'group') {
         const groupChildren = element.children as ElementNodeChild[];
-
         const groupAlignment = alignment.groups[element.id] || 'horizontal';
         const isGroupSelected = selectedIds.groups.includes(element.id);
 
         return (
-          <SortableElementBox key={`group-${element.id}`} id={element.id}>
-            <StGroupContainer key={element.id} $isSelected={isGroupSelected} $alignDirection={groupAlignment}>
-              {groupChildren?.map((child) => (
-                <LayerElementBox
-                  key={`child-${child.id}`}
-                  children={child.type}
-                  color={child.color}
-                  onClick={(e) => {
-                    e.stopPropagation(); // 그룹 클릭 우선 처리
-                    handleElementClick(element.id, true, e);
-                  }}
-                />
-              ))}
-            </StGroupContainer>
-          </SortableElementBox>
+          <CanvasGroupElement
+            key={element.id}
+            element={element}
+            groupChildren={groupChildren}
+            alignment={groupAlignment}
+            handleElementClick={handleElementClick}
+            isGroupSelected={isGroupSelected}
+          />
         );
       }
 
       return (
-        <SortableElementBox key={`element-${element.id}`} id={element.id}>
-          <LayerElementBox
-            children={element.type}
-            isSelected={selectedIds.elements.includes(element.id)}
-            onClick={(e) => handleElementClick(element.id, false, e)}
-            color={element.color}
-            isDragging={active?.id === element.id}
-          />
-        </SortableElementBox>
+        <CanvasSingleElement
+          key={element.id}
+          element={element}
+          isDragging={active?.id === element.id}
+          handleElementClick={handleElementClick}
+          isSelected={selectedIds.elements.includes(element.id)}
+        />
       );
     });
   };
