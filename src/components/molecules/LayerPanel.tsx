@@ -13,7 +13,7 @@ const LayerPanel = () => {
           <Layer
             key={element.id}
             children={element.type}
-            isSelected={selectedIds.elements.includes(element.id)}
+            isSelected={selectedIds.elements.includes(element.id) || selectedIds.groups.includes(element.id)}
             onClick={(e) => handleElementClick(element.id, false, e)}
           />
         ))}
