@@ -1,11 +1,12 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useEffect } from 'react';
 import { elementsState, selectedElementIdState } from '../store/recoil';
-import { ElementType } from '../types';
+import { ElementNode, ElementType } from '../types';
 
 const useGroupElement = () => {
   const [elements, setElements] = useRecoilState(elementsState);
   const selectedIds = useRecoilValue(selectedElementIdState);
+  const setSelectedIds = useSetRecoilState(selectedElementIdState);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -16,33 +17,42 @@ const useGroupElement = () => {
       // Group: Ctrl + G
       if (modifierKey && e.key.toLowerCase() === 'g' && !e.shiftKey) {
         e.preventDefault();
-        if (selectedIds.length >= 2) {
-          const groupId = crypto.randomUUID();
 
-          setElements((prev) => {
-            const selectedElements = prev.filter((el) => selectedIds.includes(el.id));
-            const minOrder = Math.min(...selectedElements.map((el) => el.order || Infinity));
+        let groupId: string | undefined = undefined;
 
-            const newGroup = {
-              id: groupId,
-              type: 'group' as ElementType,
-              order: minOrder,
-              children: selectedElements.map((element) => element.id),
-              color: 'transparent',
-            };
+        setElements((prev) => {
+          const selectedElementIds = selectedIds.elements;
+          const selectedElements: ElementNode[] = prev.filter((element) => selectedElementIds.includes(element.id));
 
-            const updatedElements = prev.map((element) => {
-              if (selectedIds.includes(element.id)) {
-                return {
-                  ...element,
-                  groupId,
-                  isGrouped: true,
-                };
-              }
-              return element;
-            });
+          const minOrder = Math.min(...selectedElements.map((element) => element.order || Infinity));
+          groupId = crypto.randomUUID();
 
-            return [...updatedElements, newGroup];
+          const newGroup = {
+            id: groupId,
+            type: 'group' as ElementType,
+            order: minOrder,
+            children: selectedElements.map((element) => element.id), // 그룹에 속한 요소들의 ID
+            color: 'transparent',
+          };
+
+          const updatedElements = prev.map((element) => {
+            if (selectedElementIds.includes(element.id)) {
+              return {
+                ...element,
+                groupId,
+                isGrouped: true,
+              };
+            }
+            return element;
+          });
+
+          return [...updatedElements, newGroup];
+        });
+
+        if (groupId) {
+          setSelectedIds({
+            groups: [groupId],
+            elements: [],
           });
         }
       }
@@ -50,28 +60,23 @@ const useGroupElement = () => {
       // Ungroup: Ctrl + Shift + G
       if (modifierKey && e.shiftKey && e.key.toLowerCase() === 'g') {
         e.preventDefault();
-        const selectedGroup = elements.find((element) => selectedIds.includes(element.id) && element.type === 'group');
 
-        if (selectedGroup?.type === 'group' && selectedGroup.children) {
-          const groupIdToRemove = selectedGroup.id;
+        const groupToUngroup = elements.find(
+          (element) => selectedIds.groups.includes(element.id) && element.type === 'group',
+        );
+
+        if (groupToUngroup && groupToUngroup.children) {
+          const { children, id: groupId } = groupToUngroup;
 
           setElements((prev) => {
-            // 그룹 자식 요소 복구
-            const restoredChildren = prev
-              .filter((element) => selectedGroup.children?.includes(element.id) && element.groupId === groupIdToRemove)
-              .map((element) => ({
-                ...element,
-                groupId: undefined, // 그룹 ID 제거
-                isGrouped: false, // 그룹화 상태 해제
-              }));
-
-            // 그룹 컨테이너 제거
-            const updatedElements = prev.filter(
-              (element) => element.id !== groupIdToRemove && !selectedGroup.children?.includes(element.id),
+            const restoredElements = prev.map((element) =>
+              children.includes(element.id) ? { ...element, groupId: undefined, isGrouped: false } : element,
             );
 
-            return [...updatedElements, ...restoredChildren];
+            return restoredElements.filter((element) => element.id !== groupId);
           });
+
+          setSelectedIds({ groups: [], elements: [] });
         }
       }
     };

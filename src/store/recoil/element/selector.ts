@@ -6,6 +6,10 @@ export const selectedElementState = selector({
   get: ({ get }) => {
     const elements = get(elementsState);
     const selectedIds = get(selectedElementIdState);
-    return elements.filter((element) => selectedIds.includes(element.id));
+
+    const selectedGroups = elements.filter((element) => selectedIds.groups.includes(element.id));
+    const selectedElements = elements.filter((element) => selectedIds.elements.includes(element.id));
+
+    return [...selectedGroups, ...selectedElements];
   },
 });
