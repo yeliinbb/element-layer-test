@@ -1,20 +1,38 @@
+export const ALIGN_KEYS = {
+  ALL_VERTICAL: 'allVertical',
+  ALL_HORIZONTAL: 'allHorizontal',
+  GROUP_VERTICAL: 'groupVertical',
+  GROUP_HORIZONTAL: 'groupHorizontal',
+} as const;
+
+export const ALIGN_DIRECTIONS = {
+  VERTICAL: 'vertical',
+  HORIZONTAL: 'horizontal',
+} as const;
+
+export const ELEMENT_TYPES = {
+  DIV: 'div',
+  SPAN: 'span',
+  PARAGRAPH: 'p',
+} as const;
+
 export const buttonLabels = {
   align: {
-    allVertical: 'All Vertically',
-    allHorizontal: 'All Horizontally',
-    groupVertical: 'Group Vertically',
-    groupHorizontal: 'Group Horizontally',
+    [ALIGN_KEYS.ALL_VERTICAL]: 'All Vertically',
+    [ALIGN_KEYS.ALL_HORIZONTAL]: 'All Horizontally',
+    [ALIGN_KEYS.GROUP_VERTICAL]: 'Group Vertically',
+    [ALIGN_KEYS.GROUP_HORIZONTAL]: 'Group Horizontally',
   },
   add: {
-    div: {
+    [ELEMENT_TYPES.DIV]: {
       button: 'Div',
       layer: 'div',
     },
-    span: {
+    [ELEMENT_TYPES.SPAN]: {
       button: 'Span',
       layer: 'span',
     },
-    paragraph: {
+    [ELEMENT_TYPES.PARAGRAPH]: {
       button: 'Paragraph',
       layer: 'p',
     },

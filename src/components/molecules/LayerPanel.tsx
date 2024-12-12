@@ -1,9 +1,10 @@
 import { Layer } from '..';
 import { StLayerPanel } from '../../styles';
-import { useSelectElement } from '../../hooks';
+import { useGroupElement, useSelectElement } from '../../hooks';
 
 const LayerPanel = () => {
   const { elements, selectedIds, handleElementClick } = useSelectElement();
+  useGroupElement();
 
   return (
     <StLayerPanel>
@@ -12,8 +13,8 @@ const LayerPanel = () => {
           <Layer
             key={element.id}
             children={element.type}
-            isSelected={selectedIds.includes(element.id)}
-            onClick={(e) => handleElementClick(element.id, e)}
+            isSelected={selectedIds.elements.includes(element.id)}
+            onClick={(e) => handleElementClick(element.id, false, e)}
           />
         ))}
       </ul>
