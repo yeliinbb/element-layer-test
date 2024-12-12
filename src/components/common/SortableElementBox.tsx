@@ -8,20 +8,20 @@ interface SortableElementBoxProps {
 }
 
 const SortableElementBox = ({ id, children }: SortableElementBoxProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: id,
   });
 
   const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
-    position: 'relative' as const,
-    display: 'flex',
-    flexShrink: 0,
+    zIndex: isDragging ? 999 : 'auto',
+    width: isDragging ? 'auto' : undefined,
+    minWidth: isDragging ? 'fit-content' : undefined,
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} data-draggable="true">
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} data-draggable="true" data-dragging={isDragging}>
       {children}
     </div>
   );
