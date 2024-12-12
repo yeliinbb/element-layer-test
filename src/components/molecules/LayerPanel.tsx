@@ -1,9 +1,10 @@
 import { Layer } from '..';
 import { StLayerPanel } from '../../styles';
-import { useSelectElement } from '../../hooks';
+import { useGroupElement, useSelectElement } from '../../hooks';
 
 const LayerPanel = () => {
   const { elements, selectedIds, handleElementClick } = useSelectElement();
+  useGroupElement();
 
   return (
     <StLayerPanel>

@@ -1,18 +1,20 @@
+import React from 'react';
 import { StLayerElementBox } from '../../styles';
 
-interface LayerElementBoxProps {
-  children: string;
+export interface LayerElementBoxProps {
+  children: React.ReactNode;
   isSelected: boolean;
+  isDragging?: boolean;
   onClick: (e: React.MouseEvent) => void;
   color: string;
 }
 
-const LayerElementBox = ({ children, isSelected, onClick, color }: LayerElementBoxProps) => {
+const LayerElementBox = React.memo(({ children, isSelected, isDragging, onClick, color }: LayerElementBoxProps) => {
   return (
-    <StLayerElementBox onClick={onClick} $isSelected={isSelected} $color={color}>
+    <StLayerElementBox onClick={onClick} $isSelected={isSelected} $color={color} $isDragging={isDragging}>
       {children}
     </StLayerElementBox>
   );
-};
+});
 
 export default LayerElementBox;
