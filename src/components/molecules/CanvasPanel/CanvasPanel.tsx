@@ -1,6 +1,5 @@
 import { StCanvasPanel } from '../../../styles';
 import {
-  DndContext,
   DragEndEvent,
   MouseSensor,
   TouchSensor,
@@ -9,13 +8,18 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
+import { rectSortingStrategy } from '@dnd-kit/sortable';
 import { useSelectElement, useGroupElement, useDragDrop } from '../../../hooks';
-import { RefObject, useCallback, useMemo } from 'react';
+import React, { RefObject, Suspense, lazy, useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { alignState } from '../../../store/recoil';
 import { ElementNodeChild } from '../../../types';
-import { CanvasGroupElement, CanvasSingleElement } from '..';
+
+const DndContext = lazy(() => import('@dnd-kit/core').then((mod) => ({ default: mod.DndContext })));
+const SortableContext = lazy(() => import('@dnd-kit/sortable').then((mod) => ({ default: mod.SortableContext })));
+
+const CanvasGroupElement = React.lazy(() => import('./CanvasGroupElement'));
+const CanvasSingleElement = React.lazy(() => import('./CanvasSingleElement'));
 
 interface CanvasPanelProps {
   canvasRef: RefObject<HTMLDivElement>;
@@ -60,25 +64,27 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
         const isGroupSelected = selectedIds.groups.includes(element.id);
 
         return (
-          <CanvasGroupElement
-            key={element.id}
-            element={element}
-            groupChildren={groupChildren}
-            alignment={groupAlignment}
-            handleElementClick={handleElementClick}
-            isGroupSelected={isGroupSelected}
-          />
+          <Suspense fallback={<div>Loading group...</div>} key={element.id}>
+            <CanvasGroupElement
+              element={element}
+              groupChildren={groupChildren}
+              alignment={groupAlignment}
+              handleElementClick={handleElementClick}
+              isGroupSelected={isGroupSelected}
+            />
+          </Suspense>
         );
       }
 
       return (
-        <CanvasSingleElement
-          key={element.id}
-          element={element}
-          isDragging={active?.id === element.id}
-          handleElementClick={handleElementClick}
-          isSelected={selectedIds.elements.includes(element.id)}
-        />
+        <Suspense fallback={<div>Loading element...</div>} key={element.id}>
+          <CanvasSingleElement
+            element={element}
+            isDragging={active?.id === element.id}
+            handleElementClick={handleElementClick}
+            isSelected={selectedIds.elements.includes(element.id)}
+          />
+        </Suspense>
       );
     });
   };
