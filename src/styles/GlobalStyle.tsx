@@ -24,12 +24,8 @@ const GlobalStyle = createGlobalStyle`
         height: 100%;
     }
 
-    .draggable {
-        pointer-events: auto; /* 드래그 중에도 클릭 이벤트 활성화 */
-    }
-
-    .dragging {
-        pointer-events: none; /* 드래그 중에는 클릭 차단 (선택적) */
+    button {
+        cursor: pointer;
     }
 `;
 

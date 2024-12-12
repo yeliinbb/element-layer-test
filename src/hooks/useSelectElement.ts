@@ -29,10 +29,19 @@ const useSelectElement = () => {
         }
       });
     } else {
-      setSelectedIds(() => ({
-        groups: isGroup ? [elementID] : [], // 그룹만 선택
-        elements: isGroup ? [] : [elementID], // 요소만 선택
-      }));
+      setSelectedIds((prev) => {
+        if (isGroup) {
+          return {
+            groups: prev.groups.includes(elementID) ? [] : [elementID], // 그룹만 선택 또는 해제
+            elements: [], // 요소 선택 해제
+          };
+        } else {
+          return {
+            groups: [], // 그룹 선택 해제
+            elements: prev.elements.includes(elementID) ? [] : [elementID], // 요소 선택 또는 해제
+          };
+        }
+      });
     }
   };
 
