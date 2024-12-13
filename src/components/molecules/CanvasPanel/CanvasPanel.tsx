@@ -1,16 +1,8 @@
 import { StCanvasPanel } from '../../../styles';
-import {
-  DragEndEvent,
-  MouseSensor,
-  TouchSensor,
-  closestCenter,
-  useDndContext,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
+import { MouseSensor, TouchSensor, closestCenter, useDndContext, useSensor, useSensors } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
 import { useSelectElement, useGroupElement, useDragDrop } from '../../../hooks';
-import React, { RefObject, Suspense, lazy, useCallback, useMemo } from 'react';
+import React, { RefObject, Suspense, lazy, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { alignState } from '../../../store/recoil';
 import { ElementNodeChild } from '../../../types';
@@ -27,7 +19,7 @@ interface CanvasPanelProps {
 
 const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
   const { elements, selectedIds, handleElementClick } = useSelectElement();
-  const { handleDragEnd: originalHandleDragEnd } = useDragDrop();
+  const { handleDragEnd } = useDragDrop();
   useGroupElement();
 
   const alignment = useRecoilValue(alignState);
@@ -49,14 +41,7 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      originalHandleDragEnd(event);
-    },
-    [originalHandleDragEnd],
-  );
-
-  const renderElements = () => {
+  const renderedElements = useMemo(() => {
     return elements.map((element) => {
       if (element.type === 'group') {
         const groupChildren = element.children as ElementNodeChild[];
@@ -64,7 +49,7 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
         const isGroupSelected = selectedIds.groups.includes(element.id);
 
         return (
-          <Suspense fallback={<div>Loading group...</div>} key={element.id}>
+          <Suspense fallback={null} key={element.id}>
             <CanvasGroupElement
               element={element}
               groupChildren={groupChildren}
@@ -77,7 +62,7 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
       }
 
       return (
-        <Suspense fallback={<div>Loading element...</div>} key={element.id}>
+        <Suspense fallback={null} key={element.id}>
           <CanvasSingleElement
             element={element}
             isDragging={active?.id === element.id}
@@ -87,7 +72,7 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
         </Suspense>
       );
     });
-  };
+  }, [elements, alignment, selectedIds, active?.id, handleElementClick]);
 
   const sortedItems = useMemo(() => {
     const sortedElements = [...elements].sort((a, b) => a.order - b.order);
@@ -99,7 +84,7 @@ const CanvasPanel = ({ canvasRef }: CanvasPanelProps) => {
     <StCanvasPanel $alignDirection={alignment.global} ref={canvasRef}>
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
         <SortableContext items={sortedItems} strategy={rectSortingStrategy}>
-          <ul>{renderElements()}</ul>
+          <ul>{renderedElements}</ul>
         </SortableContext>
       </DndContext>
     </StCanvasPanel>

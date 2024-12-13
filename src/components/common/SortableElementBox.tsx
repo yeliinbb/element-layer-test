@@ -12,12 +12,17 @@ const SortableElementBox = ({ id, children }: SortableElementBoxProps) => {
     id: id,
   });
 
+  const adjustedTransform = transform
+    ? { ...transform, scaleX: 1, scaleY: 1, scaleZ: 1 } // 스케일 고정
+    : undefined;
+
   const style: CSSProperties = {
-    transform: CSS.Transform.toString(transform),
+    transform: adjustedTransform ? CSS.Transform.toString(adjustedTransform) : undefined,
     transition,
     zIndex: isDragging ? 999 : 'auto',
-    width: isDragging ? 'auto' : undefined,
-    minWidth: isDragging ? 'fit-content' : undefined,
+    width: 'fit-content',
+    minWidth: 'fit-content',
+    display: 'inline-block',
   };
 
   return (

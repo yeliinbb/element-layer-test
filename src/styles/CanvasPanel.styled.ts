@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 
-interface StGroupContainerProps {
-  $isSelected: boolean;
+interface StCanvasPanelProps {
   $alignDirection: 'vertical' | 'horizontal';
 }
 
-export const StCanvasPanel = styled.div<{ $alignDirection: 'vertical' | 'horizontal' }>`
-  /* background-color: antiquewhite; */
+interface StGroupContainerProps extends StCanvasPanelProps {
+  $isSelected: boolean;
+}
+
+export const StCanvasPanel = styled.div<StCanvasPanelProps>`
   width: fit-content;
   margin: 16px;
   height: fit-content;
 
   ul {
+    width: fit-content;
+    min-width: 150px;
     background-color: antiquewhite;
     display: flex;
     flex-wrap: nowrap;
@@ -31,11 +35,14 @@ export const StGroupContainer = styled.div<StGroupContainerProps>`
   display: flex;
   flex-wrap: nowrap;
   flex-direction: ${({ $alignDirection }) => ($alignDirection === 'vertical' ? 'column' : 'row')};
-  width: auto; // 자식 요소들의 너비에 맞춤
+  width: fit-content;
   min-width: fit-content;
+  height: fit-content;
   padding: 4px;
   cursor: pointer;
   border: 2px solid ${(props) => (props.$isSelected ? '#4c3587' : 'none')};
+
+  flex-shrink: 0; /* 자식 요소 크기를 변경하지 않도록 */
 
   &::before {
     content: '';
@@ -45,7 +52,7 @@ export const StGroupContainer = styled.div<StGroupContainerProps>`
     right: 0;
     bottom: 0;
     z-index: 50;
-    pointer-events: none; // 클릭 이벤트가 내부 요소들에 전달되도록
+    pointer-events: none; /* 클릭 이벤트 방지 */
   }
 
   // 드래그 중일 때 스타일 유지
