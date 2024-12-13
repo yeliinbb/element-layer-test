@@ -16,7 +16,6 @@ export const StCanvasPanel = styled.div<StCanvasPanelProps>`
   ul {
     width: fit-content;
     min-width: 150px;
-    background-color: antiquewhite;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: ${({ $alignDirection }) => ($alignDirection === 'vertical' ? 'column' : 'row')};
