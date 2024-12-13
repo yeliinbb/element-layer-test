@@ -7,11 +7,11 @@ type useCanvasExportProps = {
 };
 
 const HTML2CANVAS_OPTIONS = {
-  scale: 4,
-  backgroundColor: null,
-  logging: false, // 성능을 위해 로깅 비활성화
-  useCORS: true, // 외부 이미지 리소스 처리를 위해 필요할 수 있음
-  allowTaint: true, // 보안을 위해 false로 유지
+  scale: 2,
+  backgroundColor: null, // 투명한 배경
+  logging: false, // 성능을 위해 디버깅 로그 비활성화
+  useCORS: false, // 외부 리소스를 사용할 일이 없으므로 false
+  allowTaint: false, // 보안을 위해 taint된 리소스 비활성화
 };
 
 const useCanvasExport = ({ canvasRef }: useCanvasExportProps) => {
