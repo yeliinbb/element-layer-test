@@ -1,16 +1,21 @@
 import styled from 'styled-components';
 
-interface StGroupContainerProps {
-  $isSelected: boolean;
+interface StCanvasPanelProps {
   $alignDirection: 'vertical' | 'horizontal';
 }
 
-export const StCanvasPanel = styled.div<{ $alignDirection: 'vertical' | 'horizontal' }>`
+interface StGroupContainerProps extends StCanvasPanelProps {
+  $isSelected: boolean;
+}
+
+export const StCanvasPanel = styled.div<StCanvasPanelProps>`
   width: fit-content;
   margin: 16px;
   height: fit-content;
 
   ul {
+    width: fit-content;
+    min-width: 150px;
     background-color: antiquewhite;
     display: flex;
     flex-wrap: nowrap;
@@ -37,8 +42,7 @@ export const StGroupContainer = styled.div<StGroupContainerProps>`
   cursor: pointer;
   border: 2px solid ${(props) => (props.$isSelected ? '#4c3587' : 'none')};
 
-  /* 자식 요소 크기를 변경하지 않도록 */
-  flex-shrink: 0;
+  flex-shrink: 0; /* 자식 요소 크기를 변경하지 않도록 */
 
   &::before {
     content: '';

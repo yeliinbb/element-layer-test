@@ -20,8 +20,9 @@ const SortableElementBox = ({ id, children }: SortableElementBoxProps) => {
     transform: adjustedTransform ? CSS.Transform.toString(adjustedTransform) : undefined,
     transition,
     zIndex: isDragging ? 999 : 'auto',
-    width: isDragging ? 'auto' : undefined,
-    minWidth: isDragging ? 'fit-content' : undefined,
+    width: 'fit-content',
+    minWidth: 'fit-content',
+    display: 'inline-block',
   };
 
   return (

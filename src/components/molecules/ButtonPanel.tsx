@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { PanelButton } from '..';
 import { ALIGN_KEYS, ELEMENT_TYPES, buttonLabels } from '../../constants';
 import { useAddElement, useSelectElement } from '../../hooks';
@@ -31,19 +32,22 @@ const ButtonPanel = ({ type }: ButtonPanelProps) => {
   const { handleAlignElement } = useAlignElement();
   const { selectedGroupId } = useSelectElement();
 
-  const handleClick = (key: string) => {
-    if (type === 'Add') {
-      handleAddElement(key as ElementType);
-    } else if (type === 'Align') {
-      handleAlignElement(key as ElementType, selectedGroupId);
-    }
-  };
+  const handleButtonClick = useCallback(
+    (key: string) => {
+      if (type === 'Add') {
+        handleAddElement(key as ElementType);
+      } else if (type === 'Align') {
+        handleAlignElement(key as ElementType, selectedGroupId);
+      }
+    },
+    [handleAddElement, handleAlignElement, selectedGroupId],
+  );
 
   return (
     <StButtonPanel>
       <span>{type}</span>
       {buttons.map((button) => (
-        <PanelButton key={button.key} children={button.label} onClick={() => handleClick(button.key)} />
+        <PanelButton key={button.key} children={button.label} onClick={() => handleButtonClick(button.key)} />
       ))}
     </StButtonPanel>
   );
